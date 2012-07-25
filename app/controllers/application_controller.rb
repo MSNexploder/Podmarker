@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
 
   # some clients are not setting current headers - fix params parsing here
   def fix_params_parsing
-    return unless request.body.length > 0
+    return unless request.body.size > 0
 
     data = ActiveSupport::JSON.decode(request.body)
     request.body.rewind if request.body.respond_to?(:rewind)
