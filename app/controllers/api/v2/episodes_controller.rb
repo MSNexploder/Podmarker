@@ -4,29 +4,6 @@ module Api
       before_filter :authenticate
       before_filter :fix_params_parsing, only: ['show', 'update']
 
-# [
-#   {
-#    "podcast": "http://example.com/feed.rss",
-#    "episode": "http://example.com/files/s01e20.mp3",
-#    "device": "gpodder_abcdef123",
-#    "action": "download",
-#    "timestamp": "2009-12-12T09:00:00"
-#   },
-#   {
-#    "podcast": "http://example.org/podcast.php",
-#    "episode": "http://ftp.example.org/foo.ogg",
-#    "action": "play",
-#    "started": 15,
-#    "position": 120,
-#    "total":  500
-#   }
-#  ]
-
-# {"actions": (list of episode actions here - see above for details),
-#     "timestamp": 12345}
-
-# todo aggregated
-
       def show
         podcast = params[:podcast]
         device_name = params[:device]
