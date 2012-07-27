@@ -13,16 +13,19 @@ class EpisodeEvent < ActiveRecord::Base
   def self.add_events(data)
     timestamp = DateTime.now.to_i
     data.map do |event_data|
-      create do |event|
-        event.podcast      = event_data[:podcast]
-        event.url          = event_data[:url]
-        event.action       = event_data[:action]
-        event.performed_at = event_data[:timestamp]
-        event.started      = event_data[:started]
-        event.position     = event_data[:position]
-        event.total        = event_data[:total]
-        event.timestamp    = timestamp
-        event.device = event.user.devices.find_by_name(event_data[:device]) if event_data.has_key? :device
+      payload = { podcast: event_data[:podcast], url: event_data[:url], user: user }
+      ActiveSupport::Notifications.instrument("podmarker.episodes.event.#{event_data[:action]}", payload) do
+        create do |event|
+          event.podcast      = event_data[:podcast]
+          event.url          = event_data[:url]
+          event.action       = event_data[:action]
+          event.performed_at = event_data[:timestamp]
+          event.started      = event_data[:started]
+          event.position     = event_data[:position]
+          event.total        = event_data[:total]
+          event.timestamp    = timestamp
+          event.device = event.user.devices.find_by_name(event_data[:device]) if event_data.has_key? :device
+        end
       end
     end
   end
@@ -43,5 +46,12 @@ class EpisodeEvent < ActiveRecord::Base
     end
 
     [result, new_timestamp]
+  end
+
+  private
+
+  def self.user
+    return nil if scope_attributes['user_id'].nil?
+    User.find scope_attributes['user_id']
   end
 end

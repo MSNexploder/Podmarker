@@ -43,7 +43,9 @@ class SubscriptionEvent < ActiveRecord::Base
   def self.add_urls(urls)
     timestamp = DateTime.now.to_i
     urls.map do |url|
-      create action: 'added', timestamp: timestamp, url: url
+      ActiveSupport::Notifications.instrument('podmarker.subscriptions.add', url: url, device: device) do
+        create action: 'added', timestamp: timestamp, url: url
+      end
     end
   end
 
@@ -51,7 +53,16 @@ class SubscriptionEvent < ActiveRecord::Base
   def self.remove_urls(urls)
     timestamp = DateTime.now.to_i
     urls.map do |url|
-      create action: 'removed', timestamp: timestamp, url: url
+      ActiveSupport::Notifications.instrument('podmarker.subscriptions.remove', url: url, device: device) do
+        create action: 'removed', timestamp: timestamp, url: url
+      end
     end
+  end
+
+  private
+
+  def self.device
+    return nil if scope_attributes['device_id'].nil?
+    Device.find scope_attributes['device_id']
   end
 end

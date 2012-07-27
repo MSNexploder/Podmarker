@@ -12,7 +12,6 @@ Pretty much pre-alpha.
 
 ## Todo
 
-* Event notifications for extensions (e.g. flattr integration)
 * Signup
 * Login / Logout
 * URL sanitizing

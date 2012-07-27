@@ -31,13 +31,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_or_create_device
-    device_name = params[:device_id]
-    device = current_user.devices.find_by_name device_name
-
-    # no device found - create new one
-    if device.nil?
-      device = current_user.devices.build name: device_name
-    end
+    device = current_user.devices.find_or_create name: params[:device_id]
 
     # simply set device active, regardless of the current status
     device.deleted = false
