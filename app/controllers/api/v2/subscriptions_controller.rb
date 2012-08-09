@@ -9,7 +9,6 @@ module Api
         since = params[:since].to_i || 0
 
         added, removed, timestamp = device.subscription_events.events_since_timestamp(since)
-        timestamp = 
 
         response = {
           add: added,
