@@ -12,6 +12,10 @@ Podmarker::Application.routes.draw do
       # episodes
       get  'episodes/:username(.:format)' => 'episodes#show'
       post 'episodes/:username(.:format)' => 'episodes#update'
+
+      # users
+      get  'users/verify(.:format)' => 'users#verify'
+      post 'users/create(.:format)' => 'users#create'
     end
   end
 
